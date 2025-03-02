@@ -1,20 +1,21 @@
-# starting
-import random
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from stock_data import get_stock_data
+from save_stocks import save_stock
 
-def get_random_tickers(num_tickers=5):
-    exchanges = ['NYSE', 'NASDAQ', 'AMEX']
-    characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    
-    random_tickers = []
-    
-    for _ in range(num_tickers):
-        ticker_length = random.randint(1, 5)
-        ticker = ''.join(random.choice(characters) for _ in range(ticker_length))
-        exchange = random.choice(exchanges)
-        random_tickers.append(f"{ticker}:{exchange}")
-    
-    return random_tickers
+app = Flask(__name__)
+CORS(app)  # Allows frontend to call backend
 
-random_tickers = get_random_tickers()
+@app.route("/stock/<symbol>", methods=["GET"])
+def stock(symbol):
+    return jsonify(get_stock_data(symbol))
 
+@app.route("/save_stock", methods=["POST"])
+def save():
+    data = request.json
+    user = data.get("user_id")
+    symbol = data["symbol"]
+    return jsonify(save_stock(user, symbol))
 
+if __name__ == "__main__":
+    app.run(debug=True)
