@@ -16,4 +16,5 @@ def get_random_tickers(num_tickers=5):
     return random_tickers
 
 random_tickers = get_random_tickers()
-print("Random Tickers:", random_tickers)
+
+
